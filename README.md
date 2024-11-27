@@ -1,2 +1,3 @@
-# school-management
+# School-management
+
 School management api (assignment)
