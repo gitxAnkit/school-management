@@ -1,7 +1,6 @@
-const mysql = require("mysql2/promise");
+const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 dotenv.config({ path: "./config/.env" });
-
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -9,9 +8,9 @@ const pool = mysql.createPool({
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    waitForConnections: true, // Wait for connections when the pool is full
-    connectionLimit: 10,      // Maximum number of connections
-    queueLimit: 0,            // Unlimited requests in the queue
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
 });
 
 // Test the connection
@@ -24,4 +23,5 @@ const pool = mysql.createPool({
         console.error("Error connecting to the database:", err.message);
     }
 })();
-module.exports = pool;
+
+module.exports = { pool };
