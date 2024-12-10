@@ -33,21 +33,43 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 // @desc Get all schools in sorted order
 // @route GET /listSchools
 exports.getSchools = catchAsyncErrors(async (req, res, next) => {
-    const { userLatitude, userLongitude } = req.params;
+    const { userLatitude, userLongitude } = req.query;
 
     const [schools] = await pool.query('SELECT * FROM schools');
 
-    const schoolsUpdated = schools.map((school) => {
-        const distance = calculateDistance(school.latitude, school.longitude, userLatitude, userLongitude);
-        return { ...school, distance };
-    });
-    schoolsUpdated.sort((a, b) => a.distance - b.distance);
+    let schoolsUpdated;
+
+    if (userLatitude && userLongitude) {
+        const latitude = parseFloat(userLatitude);
+        const longitude = parseFloat(userLongitude);
+
+        if (isNaN(latitude) || isNaN(longitude)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid latitude or longitude values."
+            });
+        }
+
+        schoolsUpdated = schools.map((school) => {
+            const distance = calculateDistance(
+                school.latitude,
+                school.longitude,
+                latitude,
+                longitude
+            );
+            return { ...school, distance };
+        }).sort((a, b) => a.distance - b.distance);
+    } else {
+        schoolsUpdated = schools;
+    }
+
     res.status(200).json({
         success: true,
-        count: schools.length,
-        schools: schoolsUpdated
+        count: schoolsUpdated.length,
+        schools: schoolsUpdated,
     });
 });
+
 
 // @desc Add new school
 // @route POST /addSchool

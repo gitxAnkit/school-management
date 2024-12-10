@@ -4,7 +4,7 @@ const { getSchools, createSchool } = require("../controllers/schoolController");
 
 const router = express.Router();
 
-router.get("/listSchools/:userLatitude/:userLongitude", getSchools);
+router.get("/listSchools", getSchools);
 router.post("/addSchool", createSchool);
 
 module.exports = router;
